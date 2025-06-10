@@ -2,7 +2,6 @@
 
 import React from 'react';
 import CheckupForm from '@/components/CheckupForm';
-
 export default function CheckupPage() {
   return (
     <div className="max-w-2xl mx-auto p-6">
