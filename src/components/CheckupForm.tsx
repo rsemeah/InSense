@@ -6,7 +6,7 @@ const CheckupForm = () => {
   // Your component logic here
   return (
     <div>
-      {/* Your component JSX here */}
+      {/* Your JSX here */}
     </div>
   );
 };
