@@ -2,6 +2,35 @@
 
 import { useState } from 'react';
 
+const CheckupForm = () => {
+  const [response, setResponse] = useState('');
+  const [input, setInput] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // logic here
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <textarea
+        className="w-full p-2 border border-gray-300 rounded"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      />
+      <button type="submit" className="mt-2 px-4 py-2 bg-red-500 text-white rounded">
+        Submit
+      </button>
+      {response && <p className="mt-4 text-green-600">{response}</p>}
+    </form>
+  );
+};
+
+export default CheckupForm;
+'use client';
+
+import { useState } from 'react';
+
 export default function CheckupForm() {
   const [response, setResponse] = useState('');
   const [input, setInput] = useState('');
