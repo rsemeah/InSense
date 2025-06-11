@@ -5,14 +5,32 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "installCommand": "npm install",
-  "environment": {
-    "NEXT_PUBLIC_SUPABASE_URL": "YOUR_SUPABASE_URL",
+  "environment": "production",
+  "environmentVariables": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://tslrqgfhclhxolvzodkk.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "YOUR_SUPABASE_ANON_KEY",
     "OPENAI_API_KEY": "YOUR_OPENAI_API_KEY"
   },
   "deployment": {
     "branch": "main",
     "autoDeploy": true,
-    "previewDeployments": true
+    "previewDeployments": true,
+    "productionBranch": "main"
+  },
+  "monitoring": {
+    "enabled": true,
+    "logLevel": "info",
+    "alerts": {
+      "enabled": true,
+      "channels": ["email", "slack"]
+    }
+  },
+  "security": {
+    "headers": {
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Content-Security-Policy": "default-src 'self'"
+    }
   }
-} 
+}
