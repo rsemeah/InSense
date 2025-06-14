@@ -1,7 +1,13 @@
 'use client'
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { HomeIcon, SparklesIcon, UserIcon, BookIcon } from 'lucide-react'
+import {
+  HomeIcon,
+  SparklesIcon,
+  UserIcon,
+  BookIcon,
+  HeartIcon
+} from 'lucide-react'
 
 export const Navigation = () => {
   const router = useRouter()
