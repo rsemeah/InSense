@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InSense by Red
 
-## Getting Started
+A sacred space for self-discovery and spiritual growth.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Daily Check-Ins** – Record your emotional, mental, physical, and spiritual states to receive AI-generated insights.  
+- **Inner Horizon** – Define your clarity paths with guided steps.  
+- **Spiritual Profiles** – Discover insights about your unique spiritual blueprint.
+
+## Deployment
+
+### 1. Required Environment Variables
+
+Set these in your hosting provider (e.g., Vercel → Project Settings → Environment Variables):
+
+```
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+
+# OpenAI
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Stripe (optional – only if you enable payments)
+STRIPE_SECRET_KEY=your_stripe_secret_key_here
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret_here
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Tip: copy `.env.example` to `.env.local` when working locally.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Deploy to Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### Via Dashboard
 
-## Learn More
+1. **Import repository** – Connect the GitHub repo to Vercel.  
+2. **Add variables** – Paste the values above into *Settings → Environment Variables*.  
+3. **Deploy** – Click **Deploy** (production builds are automatic on push to `main`).
 
-To learn more about Next.js, take a look at the following resources:
+#### Via Vercel CLI
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# install CLI
+npm i -g vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# authenticate
+vercel login
 
-## Deploy on Vercel
+# first-time setup (guided)
+vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# subsequent production deploys
+vercel --prod
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Local Development
+
+1. **Clone** the repo  
+2. **Install** dependencies  
+   ```bash
+   npm install
+   ```
+3. **Create** `.env.local` from `.env.example` and fill in credentials  
+4. **Start** dev server  
+   ```bash
+   npm run dev
+   ```
+5. Visit http://localhost:3000
+
+## Technologies
+
+- **Next.js** & **React** – modern web framework  
+- **Supabase** – PostgreSQL, auth & realtime  
+- **OpenAI** – GPT-powered insights  
+- **Tailwind CSS** – utility-first styling  
+- **Vercel** – zero-config deployments
