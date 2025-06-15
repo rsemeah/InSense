@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { CheckupForm } from '@/components/CheckupForm'
+import CheckupForm from '@/components/CheckupForm'
 
 export default function CheckupPage() {
   return (
