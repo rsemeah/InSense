@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 // Use relative path instead of path-alias to work in minimal setup
 import { supabaseAdmin } from '../../../lib/supabase';
+// Ensure DB tables exist
+import setupDatabase from '../../../lib/setupDatabase';
 
 // Initialize the OpenAI client
 const openai = new OpenAI({
@@ -20,6 +22,13 @@ export async function POST(req) {
         { error: 'Missing required rating fields' },
         { status: 400 }
       );
+    }
+
+    // Ensure the required table exists (non-blocking if it fails)
+    try {
+      await setupDatabase();
+    } catch (setupErr) {
+      console.error('Database setup error (continuing anyway):', setupErr);
     }
 
     // Create a prompt for the OpenAI model
