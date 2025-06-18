@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 30, 27, 46;
+  --background-rgb: 252, 252, 252;
+  --primary-color: 183, 110, 121;
+  --accent-color: 248, 235, 221;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  line-height: 1.5;
+}
+
+a {
+  color: rgb(var(--primary-color));
+  text-decoration: none;
+}
