@@ -5,6 +5,8 @@ const nextConfig = {
     '@supabase/supabase-js',
     '@supabase/auth-helpers-nextjs',
     'lucide-react',
+    'openai',
+    'stripe'
   ],
 
   // Disable type-checking and linting during production build for faster deploys
@@ -14,6 +16,14 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+
+  // Increase build output detail for debugging
+  output: 'standalone',
+  
+  // Disable image optimization for simpler deployment
+  images: {
+    unoptimized: true
+  }
 }
 
 module.exports = nextConfig
