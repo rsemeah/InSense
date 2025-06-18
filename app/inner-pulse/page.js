@@ -15,20 +15,45 @@ export default function InnerPulse() {
   
   // State for loading status
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Error state
+  const [error, setError] = useState('');
   
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setAiResponse('');
     setIsSubmitting(true);
-    
-    // Simulate API call delay
-    setTimeout(() => {
-      // This is where you would normally make an API call to get AI insights
-      setAiResponse(
-        `Thank you for your reflection. Based on your ratings (Emotional: ${emotional}, Mental: ${mental}, Physical: ${physical}, Spiritual: ${spiritual}), here are some insights to consider...`
+
+    try {
+      const res = await fetch('/api/generate-reflection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emotional,
+          mental,
+          physical,
+          spiritual,
+          reflection,
+        }),
+      });
+
+      if (!res.ok) {
+        const { error: errMsg } = await res.json();
+        throw new Error(errMsg || 'Unexpected error');
+      }
+
+      const { insight } = await res.json();
+      setAiResponse(insight);
+    } catch (err) {
+      console.error(err);
+      setError(
+        err?.message ||
+          'Sorry, we were unable to generate insights at this time. Please try again later.'
       );
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
   
   return (
@@ -142,7 +167,7 @@ export default function InnerPulse() {
             disabled={isSubmitting}
             className="w-full bg-[#B76E79] text-white py-3 px-6 rounded-md hover:bg-[#a25c67] transition-colors disabled:opacity-70"
           >
-            {isSubmitting ? 'Processing...' : 'Generate Insights'}
+            {isSubmitting ? 'Generating …' : 'Generate Insights'}
           </button>
         </form>
       </div>
@@ -152,6 +177,13 @@ export default function InnerPulse() {
         <div className="bg-[#F8EBDD] rounded-xl p-6 border border-[#E6D5C3] shadow-sm">
           <h3 className="text-lg font-semibold mb-3">Insights from Within</h3>
           <p className="text-[#1E1B2E]/80 whitespace-pre-line">{aiResponse}</p>
+        </div>
+      )}
+
+      {/* Error Section */}
+      {error && (
+        <div className="bg-red-100 rounded-xl p-4 border border-red-200 text-red-700">
+          {error}
         </div>
       )}
     </div>
