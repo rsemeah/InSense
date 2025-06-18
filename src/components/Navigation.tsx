@@ -1,7 +1,13 @@
 'use client'
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { HomeIcon, SparklesIcon, UserIcon, BookIcon } from 'lucide-react'
+import {
+  HomeIcon,
+  SparklesIcon,
+  UserIcon,
+  BookIcon,
+  HeartIcon, // Added HeartIcon for Inner Pulse nav item
+} from 'lucide-react'
 
 export const Navigation = () => {
   const router = useRouter()
@@ -10,7 +16,12 @@ export const Navigation = () => {
     { id: 'insight', label: 'Insights', icon: SparklesIcon, href: '/insight' },
     { id: 'profile', label: 'Blueprint', icon: UserIcon, href: '/profile' },
     { id: 'journal', label: 'Journal', icon: BookIcon, href: '/journal' },
-    { id: 'checkup', label: 'Checkup', icon: HeartIcon, href: '/checkup' }
+    {
+      id: 'inner-pulse',
+      label: 'Inner Pulse',
+      icon: HeartIcon,
+      href: '/inner-pulse',
+    },
   ]
 
   return (
