@@ -12,6 +12,17 @@ const openai = new OpenAI({
 
 export async function POST(req) {
   try {
+    // ------------------------------------------------------------------
+    // 1. Sanity-check required environment variables before doing work
+    // ------------------------------------------------------------------
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('[generate-reflection] Missing OPENAI_API_KEY env var');
+      return NextResponse.json(
+        { error: 'Server misconfiguration: missing OPENAI_API_KEY' },
+        { status: 500 }
+      );
+    }
+
     // Parse the request body
     const body = await req.json();
     const { emotional, mental, physical, spiritual, reflection } = body;
@@ -52,19 +63,30 @@ Based on this information, provide a thoughtful, personalized insight that:
 Keep the response concise (150-200 words), warm, and supportive.
 `;
 
-    // Call the OpenAI API
-    const completion = await openai.chat.completions.create({
-      messages: [{ role: 'user', content: prompt }],
-      model: 'gpt-4',
-      temperature: 0.7,
-      max_tokens: 300,
-    });
-
-    // Extract the response
-    const aiResponse = completion.choices[0].message.content;
+    // ------------------------------------------------------------------
+    // 2. Call OpenAI and capture any potential errors explicitly
+    // ------------------------------------------------------------------
+    let aiResponse = '';
+    try {
+      console.log('[generate-reflection] Calling OpenAI …');
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        model: 'gpt-4',
+        temperature: 0.7,
+        max_tokens: 300,
+      });
+      aiResponse = completion.choices?.[0]?.message?.content || '';
+    } catch (openAiErr) {
+      console.error('[generate-reflection] OpenAI error:', openAiErr);
+      return NextResponse.json(
+        { error: 'Failed to generate AI insight', detail: `${openAiErr?.message || openAiErr}` },
+        { status: 502 }
+      );
+    }
 
     // Persist to Supabase (non-blocking – errors logged but won't break user flow)
     try {
+      console.log('[generate-reflection] Saving entry to Supabase …');
       await supabaseAdmin.from('inner_pulse_entries').insert({
         emotional,
         mental,
@@ -84,9 +106,10 @@ Keep the response concise (150-200 words), warm, and supportive.
     // Return the AI-generated insight
     return NextResponse.json({ insight: aiResponse });
   } catch (error) {
-    console.error('Error generating reflection:', error);
+    // Top-level catch – unexpected runtime failure
+    console.error('[generate-reflection] Uncaught error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate reflection' },
+      { error: 'Failed to generate reflection', detail: `${error?.message || error}` },
       { status: 500 }
     );
   }
