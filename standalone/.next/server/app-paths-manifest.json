@@ -1,0 +1,5 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/inner-pulse/page": "app/inner-pulse/page.js",
+  "/page": "app/page.js"
+}
