@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { supabaseAdmin } from '@/lib/supabase';
+// Use relative path instead of path-alias to work in minimal setup
+import { supabaseAdmin } from '../../../lib/supabase';
 
 // Initialize the OpenAI client
 const openai = new OpenAI({
