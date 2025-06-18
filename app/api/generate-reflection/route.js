@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { supabaseAdmin } from '@/lib/supabase';
 
 // Initialize the OpenAI client
 const openai = new OpenAI({
@@ -51,6 +52,24 @@ Keep the response concise (150-200 words), warm, and supportive.
 
     // Extract the response
     const aiResponse = completion.choices[0].message.content;
+
+    // Persist to Supabase (non-blocking – errors logged but won't break user flow)
+    try {
+      await supabaseAdmin.from('inner_pulse_entries').insert({
+        emotional,
+        mental,
+        physical,
+        spiritual,
+        reflection,
+        ai_response: aiResponse,
+        // In a real auth setup, replace null with the authenticated user id.
+        user_id: null,
+        created_at: new Date().toISOString(),
+      });
+    } catch (dbErr) {
+      console.error('Supabase insert error:', dbErr);
+      // We do not fail the request if DB write fails; insight is still returned.
+    }
 
     // Return the AI-generated insight
     return NextResponse.json({ insight: aiResponse });
