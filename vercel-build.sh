@@ -13,15 +13,24 @@ export NEXT_TELEMETRY_DISABLED=1
 echo "📦 Installing dependencies explicitly..."
 npm install --no-save @supabase/supabase-js stripe lucide-react openai
 
-# If a tsconfig is present but TypeScript isn't installed in the
-# production environment, Next.js will abort early. Disable the config
-# by renaming it for the duration of this build.
-TSCONFIG_BACKUP=""
-if [ -f "tsconfig.json" ]; then
-  echo "⚠️  Renaming tsconfig.json to bypass TypeScript requirement..."
-  mv tsconfig.json tsconfig.json.bak
-  TSCONFIG_BACKUP="tsconfig.json.bak"
+# ---------------------------------------------------------------------
+# Convert TypeScript → JavaScript (and disable tsconfig) for deployment
+# ---------------------------------------------------------------------
+if [ -f "./prepare-deploy.js" ]; then
+  echo "🔧 Converting TypeScript sources to JavaScript for build..."
+  node ./prepare-deploy.js convert
+else
+  echo "⚠️  prepare-deploy.js not found – skipping TS→JS conversion."
 fi
+
+# Always restore original sources on exit (success or failure)
+cleanup() {
+  if [ -f "./prepare-deploy.js" ]; then
+    echo "♻️  Restoring original TypeScript sources..."
+    node ./prepare-deploy.js restore || true
+  fi
+}
+trap cleanup EXIT
 
 # Ensure the .next directory exists
 mkdir -p .next
@@ -34,11 +43,6 @@ NODE_OPTIONS="--max-old-space-size=4096" npx next build
 if [ ! -f ".next/routes-manifest.json" ]; then
   echo "❌ Error: routes-manifest.json was not generated. Build failed."
   exit 1
-fi
-
-# Restore tsconfig.json if we renamed it
-if [ -n "$TSCONFIG_BACKUP" ]; then
-  mv "$TSCONFIG_BACKUP" tsconfig.json
 fi
 
 echo "✅ Build process completed successfully!"
