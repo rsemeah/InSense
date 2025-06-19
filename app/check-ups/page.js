@@ -11,6 +11,8 @@ export default function CheckUps() {
   const router = useRouter();
   const [currentScreen, setCurrentScreen] = useState('home');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [aiFeedback, setAiFeedback] = useState('');
   const [formData, setFormData] = useState({
     emotional: 5,
     mental: 5,
@@ -30,6 +32,7 @@ export default function CheckUps() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setFeedbackLoading(true);
 
     try {
       const response = await fetch('/api/generate-reflection', {
@@ -45,13 +48,13 @@ export default function CheckUps() {
       }
 
       const data = await response.json();
-      
-      // Redirect to reflections page or show success message
-      router.push('/reflections');
+      // Store the AI insight locally for immediate feedback
+      setAiFeedback(data.insight || 'No insight returned');
     } catch (error) {
       console.error('Error submitting check-up:', error);
     } finally {
       setIsSubmitting(false);
+      setFeedbackLoading(false);
     }
   };
 
@@ -194,6 +197,28 @@ export default function CheckUps() {
             </button>
           </div>
         </form>
+
+        {/* AI Feedback Card */}
+        {(feedbackLoading || aiFeedback) && (
+          <div className="mt-8">
+            <div className="bg-gradient-to-br from-[#1E1B2E] to-[#2d2a3d] rounded-2xl p-5 text-[#FCFCFC] shadow-md">
+              <div className="flex justify-between items-start mb-3">
+                <span className="text-xs uppercase tracking-wider text-[#FCFCFC]/70">
+                  Your AI Reflection
+                </span>
+              </div>
+              {feedbackLoading ? (
+                <p className="text-sm text-[#FCFCFC]/80 animate-pulse">
+                  Generating your personalised insight...
+                </p>
+              ) : (
+                <p className="text-sm text-[#FCFCFC]/80 whitespace-pre-wrap">
+                  {aiFeedback}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
       </main>
 
       <Navigation currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />

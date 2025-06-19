@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '../../components/Header';
 import { Navigation } from '../../components/Navigation';
@@ -17,6 +17,42 @@ import {
 
 export default function InnerPulsePage() {
   const [currentScreen, setCurrentScreen] = useState('home');
+  const [insight, setInsight] = useState('');
+  const [loadingInsight, setLoadingInsight] = useState(true);
+
+  // ------------------------------------------------------------------
+  // Fetch an AI-generated reflection when the page mounts
+  // ------------------------------------------------------------------
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchInsight() {
+      try {
+        const res = await fetch('/api/generate-reflection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          // Neutral default payload for guest/first load
+          body: JSON.stringify({
+            emotional: 5,
+            mental: 5,
+            physical: 5,
+            spiritual: 5,
+            reflection: '',
+          }),
+        });
+        if (!res.ok) throw new Error('Failed to fetch insight');
+        const data = await res.json();
+        if (!cancelled) setInsight(data.insight || '');
+      } catch (err) {
+        console.error('[InnerPulse] insight error:', err);
+      } finally {
+        if (!cancelled) setLoadingInsight(false);
+      }
+    }
+    fetchInsight();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const tools = [
     {
@@ -166,15 +202,20 @@ export default function InnerPulsePage() {
                 <span className="text-xs uppercase tracking-wider text-[#FCFCFC]/70">
                   Today's Insight
                 </span>
-                <h3 className="text-xl font-medium mt-2 mb-3">Inner Stillness</h3>
+                {!loadingInsight && (
+                  <h3 className="text-xl font-medium mt-2 mb-3">
+                    Personal Reflection
+                  </h3>
+                )}
               </div>
               <div className="w-10 h-10 rounded-full bg-[#B76E79]/20 flex items-center justify-center">
                 <MoonIcon size={20} className="text-[#B76E79]" />
               </div>
             </div>
-            <p className="text-sm text-[#FCFCFC]/80 mb-4">
-              Today invites you to find moments of quiet contemplation. Your inner
-              wisdom speaks clearest in silence.
+            <p className="text-sm text-[#FCFCFC]/80 mb-4 whitespace-pre-wrap">
+              {loadingInsight
+                ? 'Fetching your personalised insight...'
+                : insight || 'Unable to load insight at this time.'}
             </p>
             <div className="flex items-center justify-between text-xs text-[#FCFCFC]/60">
               <span>Daily Wisdom</span>
