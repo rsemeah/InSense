@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for Mystic Minimalism UI */
+:root {
+  --primary: #B76E79;
+  --background: #FCFCFC;
+  --text-primary: #1E1B2E;
+  --text-secondary: #1E1B2E60;
+  --accent-light: #F8EBDD;
+  --accent-dark: #1E1B2E;
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-[#FCFCFC] text-[#1E1B2E];
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl p-5 shadow-sm border border-[#F8EBDD];
+  }
+  
+  .btn-primary {
+    @apply bg-[#B76E79] text-white px-4 py-2 rounded-lg hover:bg-[#B76E79]/90 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-[#F8EBDD] text-[#1E1B2E] px-4 py-2 rounded-lg hover:bg-[#F8EBDD]/80 transition-colors;
+  }
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-light);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}

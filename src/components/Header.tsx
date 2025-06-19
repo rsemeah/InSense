@@ -1,10 +1,7 @@
-'use client'
-import React from 'react'
-import { MoonIcon } from 'lucide-react'
-
+import React from 'react';
+import { MoonIcon } from 'lucide-react';
 export const Header = () => {
-  return (
-    <header className="sticky top-0 z-20 px-5 py-4 bg-[#FCFCFC]/80 backdrop-blur-sm border-b border-[#F8EBDD]">
+  return <header className="sticky top-0 z-10 px-5 py-4 bg-[#FCFCFC]/80 backdrop-blur-sm border-b border-[#F8EBDD]">
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <h1 className="text-xl font-medium text-[#1E1B2E]">
@@ -16,6 +13,5 @@ export const Header = () => {
           <MoonIcon size={18} />
         </button>
       </div>
-    </header>
-  )
-}
+    </header>;
+};
