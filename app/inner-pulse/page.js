@@ -19,18 +19,18 @@ export default function InnerPulsePage() {
   const [currentScreen, setCurrentScreen] = useState('home');
   const [insight, setInsight] = useState('');
   const [loadingInsight, setLoadingInsight] = useState(true);
+  const [errorInsight, setErrorInsight] = useState(false);
 
   // ------------------------------------------------------------------
   // Fetch an AI-generated reflection when the page mounts
   // ------------------------------------------------------------------
   useEffect(() => {
     let cancelled = false;
-    async function fetchInsight() {
+    async function fetchInsight(attempt = 1) {
       try {
         const res = await fetch('/api/generate-reflection', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          // Neutral default payload for guest/first load
           body: JSON.stringify({
             emotional: 5,
             mental: 5,
@@ -39,11 +39,24 @@ export default function InnerPulsePage() {
             reflection: '',
           }),
         });
-        if (!res.ok) throw new Error('Failed to fetch insight');
+        if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
-        if (!cancelled) setInsight(data.insight || '');
+        if (!cancelled) {
+          setInsight(data.insight || '');
+          setErrorInsight(false);
+        }
       } catch (err) {
-        console.error('[InnerPulse] insight error:', err);
+        console.error(`[InnerPulse] insight attempt ${attempt} failed:`, err);
+        if (attempt < 3) {
+          // simple back-off retry
+          setTimeout(() => fetchInsight(attempt + 1), attempt * 500);
+        } else if (!cancelled) {
+          setErrorInsight(true);
+          // Static fallback content
+          setInsight(
+            'Take a deep breath and allow stillness to guide your next step. Trust that clarity will follow.'
+          );
+        }
       } finally {
         if (!cancelled) setLoadingInsight(false);
       }
@@ -215,8 +228,13 @@ export default function InnerPulsePage() {
             <p className="text-sm text-[#FCFCFC]/80 mb-4 whitespace-pre-wrap">
               {loadingInsight
                 ? 'Fetching your personalised insight...'
-                : insight || 'Unable to load insight at this time.'}
+                : insight}
             </p>
+            {errorInsight && (
+              <p className="text-xs text-red-300">
+                Unable to reach AI service, showing fallback message.
+              </p>
+            )}
             <div className="flex items-center justify-between text-xs text-[#FCFCFC]/60">
               <span>Daily Wisdom</span>
               <span>{new Date().toLocaleDateString()}</span>
