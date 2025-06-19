@@ -1,18 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Header } from '../../components/Header';
-import { Navigation } from '../../components/Navigation';
-import { HeartIcon, BrainIcon, ActivityIcon, SparklesIcon } from 'lucide-react';
 
 export default function CheckUps() {
-  const router = useRouter();
-  const [currentScreen, setCurrentScreen] = useState('home');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedbackLoading, setFeedbackLoading] = useState(false);
-  const [aiFeedback, setAiFeedback] = useState('');
+  const [aiResponse, setAiResponse] = useState('');
   const [formData, setFormData] = useState({
     emotional: 5,
     mental: 5,
@@ -25,15 +18,14 @@ export default function CheckUps() {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: name === 'reflection' ? value : Number(value)
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setFeedbackLoading(true);
-
+    
     try {
       const response = await fetch('/api/generate-reflection', {
         method: 'POST',
@@ -44,184 +36,153 @@ export default function CheckUps() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit check-up');
+        throw new Error('Failed to submit');
       }
 
       const data = await response.json();
-      // Store the AI insight locally for immediate feedback
-      setAiFeedback(data.insight || 'No insight returned');
+      setAiResponse(data.insight || 'No insight available');
     } catch (error) {
-      console.error('Error submitting check-up:', error);
+      console.error('Error:', error);
+      setAiResponse('Error generating insight. Please try again.');
     } finally {
       setIsSubmitting(false);
-      setFeedbackLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-[#FCFCFC] text-[#1E1B2E]">
-      <Header />
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Daily Check-Up</h1>
       
-      <main className="flex-1 px-5 py-4 overflow-y-auto pb-20">
-        <div className="mb-6">
-          <h1 className="text-2xl font-medium mb-1">Daily Check-up</h1>
-          <p className="text-[#1E1B2E]/60">Track your emotional, mental, physical, and spiritual states</p>
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: '20px' }}>
+          <label>
+            Emotional: {formData.emotional}
+            <input
+              type="range"
+              name="emotional"
+              min="1"
+              max="10"
+              value={formData.emotional}
+              onChange={handleChange}
+              style={{ width: '100%', marginTop: '5px' }}
+            />
+          </label>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-5">
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-[#F8EBDD]">
-              <div className="flex items-center mb-3">
-                <div className="w-8 h-8 bg-[#F8EBDD] rounded-full flex items-center justify-center mr-3">
-                  <HeartIcon size={18} className="text-[#B76E79]" />
-                </div>
-                <label className="font-medium">
-                  Emotional State: {formData.emotional}
-                </label>
-              </div>
-              <input
-                type="range"
-                name="emotional"
-                min="1"
-                max="10"
-                value={formData.emotional}
-                onChange={handleChange}
-                className="w-full h-2 bg-[#F8EBDD] rounded-lg appearance-none cursor-pointer"
-              />
-              <div className="flex justify-between text-xs mt-1 text-[#1E1B2E]/60">
-                <span>Low</span>
-                <span>High</span>
-              </div>
-            </div>
+        <div style={{ marginBottom: '20px' }}>
+          <label>
+            Mental: {formData.mental}
+            <input
+              type="range"
+              name="mental"
+              min="1"
+              max="10"
+              value={formData.mental}
+              onChange={handleChange}
+              style={{ width: '100%', marginTop: '5px' }}
+            />
+          </label>
+        </div>
 
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-[#F8EBDD]">
-              <div className="flex items-center mb-3">
-                <div className="w-8 h-8 bg-[#F8EBDD] rounded-full flex items-center justify-center mr-3">
-                  <BrainIcon size={18} className="text-[#1E1B2E]" />
-                </div>
-                <label className="font-medium">
-                  Mental State: {formData.mental}
-                </label>
-              </div>
-              <input
-                type="range"
-                name="mental"
-                min="1"
-                max="10"
-                value={formData.mental}
-                onChange={handleChange}
-                className="w-full h-2 bg-[#F8EBDD] rounded-lg appearance-none cursor-pointer"
-              />
-              <div className="flex justify-between text-xs mt-1 text-[#1E1B2E]/60">
-                <span>Low</span>
-                <span>High</span>
-              </div>
-            </div>
+        <div style={{ marginBottom: '20px' }}>
+          <label>
+            Physical: {formData.physical}
+            <input
+              type="range"
+              name="physical"
+              min="1"
+              max="10"
+              value={formData.physical}
+              onChange={handleChange}
+              style={{ width: '100%', marginTop: '5px' }}
+            />
+          </label>
+        </div>
 
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-[#F8EBDD]">
-              <div className="flex items-center mb-3">
-                <div className="w-8 h-8 bg-[#F8EBDD] rounded-full flex items-center justify-center mr-3">
-                  <ActivityIcon size={18} className="text-gray-600" />
-                </div>
-                <label className="font-medium">
-                  Physical State: {formData.physical}
-                </label>
-              </div>
-              <input
-                type="range"
-                name="physical"
-                min="1"
-                max="10"
-                value={formData.physical}
-                onChange={handleChange}
-                className="w-full h-2 bg-[#F8EBDD] rounded-lg appearance-none cursor-pointer"
-              />
-              <div className="flex justify-between text-xs mt-1 text-[#1E1B2E]/60">
-                <span>Low</span>
-                <span>High</span>
-              </div>
-            </div>
+        <div style={{ marginBottom: '20px' }}>
+          <label>
+            Spiritual: {formData.spiritual}
+            <input
+              type="range"
+              name="spiritual"
+              min="1"
+              max="10"
+              value={formData.spiritual}
+              onChange={handleChange}
+              style={{ width: '100%', marginTop: '5px' }}
+            />
+          </label>
+        </div>
 
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-[#F8EBDD]">
-              <div className="flex items-center mb-3">
-                <div className="w-8 h-8 bg-[#F8EBDD] rounded-full flex items-center justify-center mr-3">
-                  <SparklesIcon size={18} className="text-purple-600" />
-                </div>
-                <label className="font-medium">
-                  Spiritual State: {formData.spiritual}
-                </label>
-              </div>
-              <input
-                type="range"
-                name="spiritual"
-                min="1"
-                max="10"
-                value={formData.spiritual}
-                onChange={handleChange}
-                className="w-full h-2 bg-[#F8EBDD] rounded-lg appearance-none cursor-pointer"
-              />
-              <div className="flex justify-between text-xs mt-1 text-[#1E1B2E]/60">
-                <span>Low</span>
-                <span>High</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-[#F8EBDD]">
-            <label className="block mb-2 font-medium">
-              Reflection (optional)
-            </label>
+        <div style={{ marginBottom: '20px' }}>
+          <label>
+            Reflection (optional):
             <textarea
               name="reflection"
               value={formData.reflection}
               onChange={handleChange}
               rows="4"
+              style={{ width: '100%', marginTop: '5px', padding: '8px' }}
               placeholder="Share your thoughts about how you're feeling today..."
-              className="w-full p-3 border border-[#F8EBDD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B76E79]"
             ></textarea>
-          </div>
+          </label>
+        </div>
 
-          <div className="flex gap-3 mt-6">
-            <Link 
-              href="/inner-pulse" 
-              className="flex-1 py-3 px-4 bg-[#F8EBDD] text-[#1E1B2E] rounded-lg hover:bg-[#F8EBDD]/80 transition-colors text-center"
-            >
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1 py-3 px-4 bg-[#B76E79] hover:bg-[#B76E79]/90 text-white rounded-lg disabled:opacity-50 transition-colors"
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Check-Up'}
-            </button>
-          </div>
-        </form>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <Link 
+            href="/" 
+            style={{ 
+              flex: 1, 
+              padding: '10px', 
+              backgroundColor: '#f0f0f0', 
+              textAlign: 'center', 
+              borderRadius: '4px',
+              textDecoration: 'none',
+              color: '#333'
+            }}
+          >
+            Cancel
+          </Link>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            style={{ 
+              flex: 1, 
+              padding: '10px', 
+              backgroundColor: '#B76E79', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '4px',
+              cursor: 'pointer',
+              opacity: isSubmitting ? 0.7 : 1
+            }}
+          >
+            {isSubmitting ? 'Submitting...' : 'Submit Check-Up'}
+          </button>
+        </div>
+      </form>
 
-        {/* AI Feedback Card */}
-        {(feedbackLoading || aiFeedback) && (
-          <div className="mt-8">
-            <div className="bg-gradient-to-br from-[#1E1B2E] to-[#2d2a3d] rounded-2xl p-5 text-[#FCFCFC] shadow-md">
-              <div className="flex justify-between items-start mb-3">
-                <span className="text-xs uppercase tracking-wider text-[#FCFCFC]/70">
-                  Your AI Reflection
-                </span>
-              </div>
-              {feedbackLoading ? (
-                <p className="text-sm text-[#FCFCFC]/80 animate-pulse">
-                  Generating your personalised insight...
-                </p>
-              ) : (
-                <p className="text-sm text-[#FCFCFC]/80 whitespace-pre-wrap">
-                  {aiFeedback}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-      </main>
+      {aiResponse && (
+        <div style={{ 
+          marginTop: '30px', 
+          padding: '15px', 
+          backgroundColor: '#1E1B2E', 
+          color: 'white', 
+          borderRadius: '8px' 
+        }}>
+          <h3 style={{ marginBottom: '10px' }}>Your Reflection</h3>
+          <p style={{ whiteSpace: 'pre-wrap' }}>{aiResponse}</p>
+        </div>
+      )}
 
-      <Navigation currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
+      <div style={{ marginTop: '30px', textAlign: 'center' }}>
+        <Link 
+          href="/inner-pulse" 
+          style={{ color: '#B76E79', textDecoration: 'none' }}
+        >
+          Back to Inner Pulse
+        </Link>
+      </div>
     </div>
   );
 }
