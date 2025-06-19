@@ -1,20 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { Header } from '../components/Header';
+import { Navigation } from '../components/Navigation';
 
 export default function HomePage() {
-  return (
-    <div className="min-h-screen bg-white p-8 text-gray-800">
-      <header className="mb-12 text-center">
-        <h1 className="text-4xl font-bold text-[#B76E79] mb-2">InSense</h1>
-        <p className="text-lg">Your journey to self-discovery</p>
-      </header>
+  const [currentScreen, setCurrentScreen] = useState('home');
 
-      <main className="max-w-4xl mx-auto">
+  return (
+    <div className="flex flex-col w-full min-h-screen bg-[#FCFCFC] text-[#1E1B2E]">
+      {/* Top App Bar */}
+      <Header />
+
+      {/* Hero Section */}
+      <main className="flex-1 px-5 py-8 overflow-y-auto pb-20">
         <section className="mb-12 text-center">
-          <h2 className="text-2xl font-semibold mb-4">Welcome to InSense</h2>
-          <p className="mb-6">
+          <h1 className="text-3xl font-medium mb-3">
+            Welcome to <span className="text-[#B76E79]">InSense</span>
+          </h1>
+          <p className="text-[#1E1B2E]/60 mb-6">
             Explore your inner world and discover insights about yourself through our
             thoughtfully designed experiences.
           </p>
@@ -22,7 +27,7 @@ export default function HomePage() {
           <div className="mt-8 flex flex-col items-center">
             <Link 
               href="/inner-pulse" 
-              className="px-6 py-3 bg-[#B76E79] text-white rounded-lg hover:bg-[#a25c67] transition-colors"
+              className="px-6 py-3 bg-[#B76E79] text-white rounded-lg hover:bg-[#B76E79]/90 transition-colors"
             >
               Explore Inner Pulse ✨
             </Link>
@@ -33,9 +38,8 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer className="mt-16 text-center text-gray-500 text-sm">
-        <p>© 2025 InSense. All rights reserved.</p>
-      </footer>
+      {/* Bottom Navigation */}
+      <Navigation currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
     </div>
   );
 }

@@ -1,191 +1,190 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { Header } from '../../components/Header';
+import { Navigation } from '../../components/Navigation';
+import { 
+  BarChart3Icon, 
+  BookOpenIcon, 
+  CalendarIcon, 
+  FlameIcon, 
+  MoonIcon, 
+  SparklesIcon, 
+  StarIcon, 
+  SunIcon 
+} from 'lucide-react';
 
-export default function InnerPulse() {
-  // State for form values
-  const [emotional, setEmotional] = useState(5);
-  const [mental, setMental] = useState(5);
-  const [physical, setPhysical] = useState(5);
-  const [spiritual, setSpiritual] = useState(5);
-  const [reflection, setReflection] = useState('');
-  
-  // State for the AI response
-  const [aiResponse, setAiResponse] = useState('');
-  
-  // State for loading status
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  // Error state
-  const [error, setError] = useState('');
-  
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setAiResponse('');
-    setIsSubmitting(true);
+export default function InnerPulsePage() {
+  const [currentScreen, setCurrentScreen] = useState('home');
 
-    try {
-      const res = await fetch('/api/generate-reflection', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          emotional,
-          mental,
-          physical,
-          spiritual,
-          reflection,
-        }),
-      });
-
-      if (!res.ok) {
-        const { error: errMsg } = await res.json();
-        throw new Error(errMsg || 'Unexpected error');
-      }
-
-      const { insight } = await res.json();
-      setAiResponse(insight);
-    } catch (err) {
-      console.error(err);
-      setError(
-        err?.message ||
-          'Sorry, we were unable to generate insights at this time. Please try again later.'
-      );
-    } finally {
-      setIsSubmitting(false);
+  const tools = [
+    {
+      id: 'check-ups',
+      name: 'Daily Check-up',
+      description: 'Track your emotional, mental, physical, and spiritual states',
+      icon: <BarChart3Icon size={24} />,
+      color: 'bg-[#F8EBDD]',
+      textColor: 'text-[#B76E79]',
+      link: '/check-ups'
+    },
+    {
+      id: 'reflections',
+      name: 'Reflections',
+      description: 'Review your AI-generated insights and past reflections',
+      icon: <BookOpenIcon size={24} />,
+      color: 'bg-[#F8EBDD]',
+      textColor: 'text-[#1E1B2E]',
+      link: '/reflections'
+    },
+    {
+      id: 'dashboard',
+      name: 'Dashboard',
+      description: 'Visualize your progress and patterns over time',
+      icon: <BarChart3Icon size={24} />,
+      color: 'bg-[#F8EBDD]',
+      textColor: 'text-[#1E1B2E]',
+      link: '/dashboard'
+    },
+    {
+      id: 'profile',
+      name: 'Spiritual Blueprint',
+      description: 'Discover your human design, astrology, and numerology profile',
+      icon: <StarIcon size={24} />,
+      color: 'bg-[#F8EBDD]',
+      textColor: 'text-[#1E1B2E]',
+      link: '/profile'
     }
-  };
-  
-  return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-[#B76E79] mb-6">Inner Pulse</h1>
-      
-      <div className="bg-white rounded-xl shadow-sm border border-[#F8EBDD] p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">How are you feeling today?</h2>
-        <p className="text-gray-600 mb-6">
-          Rate your state across four dimensions and share a brief reflection.
-        </p>
-        
-        <form onSubmit={handleSubmit}>
-          {/* Emotional Slider */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2 flex justify-between">
-              <span>Emotional</span>
-              <span className="text-[#B76E79] font-semibold">{emotional}/10</span>
-            </label>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={emotional}
-              onChange={(e) => setEmotional(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Low</span>
-              <span>High</span>
-            </div>
-          </div>
-          
-          {/* Mental Slider */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2 flex justify-between">
-              <span>Mental</span>
-              <span className="text-[#B76E79] font-semibold">{mental}/10</span>
-            </label>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={mental}
-              onChange={(e) => setMental(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Low</span>
-              <span>High</span>
-            </div>
-          </div>
-          
-          {/* Physical Slider */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2 flex justify-between">
-              <span>Physical</span>
-              <span className="text-[#B76E79] font-semibold">{physical}/10</span>
-            </label>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={physical}
-              onChange={(e) => setPhysical(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Low</span>
-              <span>High</span>
-            </div>
-          </div>
-          
-          {/* Spiritual Slider */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2 flex justify-between">
-              <span>Spiritual</span>
-              <span className="text-[#B76E79] font-semibold">{spiritual}/10</span>
-            </label>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={spiritual}
-              onChange={(e) => setSpiritual(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Low</span>
-              <span>High</span>
-            </div>
-          </div>
-          
-          {/* Reflection Textarea */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">
-              Your Reflection
-            </label>
-            <textarea
-              value={reflection}
-              onChange={(e) => setReflection(e.target.value)}
-              placeholder="Share your thoughts, feelings, or experiences today..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#B76E79] focus:border-transparent"
-              rows="4"
-            ></textarea>
-          </div>
-          
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-[#B76E79] text-white py-3 px-6 rounded-md hover:bg-[#a25c67] transition-colors disabled:opacity-70"
-          >
-            {isSubmitting ? 'Generating …' : 'Generate Insights'}
-          </button>
-        </form>
-      </div>
-      
-      {/* AI Response Section */}
-      {aiResponse && (
-        <div className="bg-[#F8EBDD] rounded-xl p-6 border border-[#E6D5C3] shadow-sm">
-          <h3 className="text-lg font-semibold mb-3">Insights from Within</h3>
-          <p className="text-[#1E1B2E]/80 whitespace-pre-line">{aiResponse}</p>
-        </div>
-      )}
+  ];
 
-      {/* Error Section */}
-      {error && (
-        <div className="bg-red-100 rounded-xl p-4 border border-red-200 text-red-700">
-          {error}
+  const rituals = [
+    {
+      id: 'morning',
+      name: 'Morning Ritual',
+      description: 'Start your day with intention and clarity',
+      icon: <SunIcon size={24} />,
+      color: 'bg-[#F8EBDD]',
+      textColor: 'text-[#1E1B2E]',
+      link: '/rituals/morning'
+    },
+    {
+      id: 'evening',
+      name: 'Evening Reflection',
+      description: 'Wind down and process your day',
+      icon: <MoonIcon size={24} />,
+      color: 'bg-[#F8EBDD]',
+      textColor: 'text-[#1E1B2E]',
+      link: '/rituals/evening'
+    },
+    {
+      id: 'study',
+      name: 'Study Path',
+      description: 'Deepen your spiritual knowledge and practice',
+      icon: <SparklesIcon size={24} />,
+      color: 'bg-[#F8EBDD]',
+      textColor: 'text-[#1E1B2E]',
+      link: '/study'
+    },
+    {
+      id: 'calendar',
+      name: 'Sacred Calendar',
+      description: 'Track cosmic events and plan your spiritual practice',
+      icon: <CalendarIcon size={24} />,
+      color: 'bg-[#F8EBDD]',
+      textColor: 'text-[#1E1B2E]',
+      link: '/calendar'
+    }
+  ];
+
+  return (
+    <div className="flex flex-col w-full min-h-screen bg-[#FCFCFC] text-[#1E1B2E]">
+      <Header />
+      
+      <main className="flex-1 px-5 py-4 overflow-y-auto pb-20">
+        <div className="mb-6">
+          <h1 className="text-2xl font-medium mb-1">Inner Pulse</h1>
+          <p className="text-[#1E1B2E]/60">Tools and rituals for your spiritual journey</p>
         </div>
-      )}
+
+        {/* Tools Section */}
+        <section className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-medium">Your Tools</h2>
+            <div className="w-8 h-8 rounded-full bg-[#F8EBDD] flex items-center justify-center">
+              <FlameIcon size={18} className="text-[#B76E79]" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3">
+            {tools.map(tool => (
+              <Link key={tool.id} href={tool.link}>
+                <div className="bg-white p-4 rounded-2xl shadow-sm border border-[#F8EBDD] flex items-center">
+                  <div className={`w-10 h-10 ${tool.color} rounded-full flex items-center justify-center mr-4`}>
+                    <span className={tool.textColor}>{tool.icon}</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium">{tool.name}</h3>
+                    <p className="text-sm text-[#1E1B2E]/60">{tool.description}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Rituals Section */}
+        <section className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-medium">Daily Rituals</h2>
+            <div className="w-8 h-8 rounded-full bg-[#F8EBDD] flex items-center justify-center">
+              <SparklesIcon size={18} className="text-[#1E1B2E]" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3">
+            {rituals.map(ritual => (
+              <Link key={ritual.id} href={ritual.link}>
+                <div className="bg-white p-4 rounded-2xl shadow-sm border border-[#F8EBDD] flex items-center">
+                  <div className={`w-10 h-10 ${ritual.color} rounded-full flex items-center justify-center mr-4`}>
+                    <span className={ritual.textColor}>{ritual.icon}</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium">{ritual.name}</h3>
+                    <p className="text-sm text-[#1E1B2E]/60">{ritual.description}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Featured Insight */}
+        <section className="mb-6">
+          <div className="bg-gradient-to-br from-[#1E1B2E] to-[#2d2a3d] rounded-2xl p-5 text-[#FCFCFC] shadow-md">
+            <div className="flex justify-between items-start">
+              <div>
+                <span className="text-xs uppercase tracking-wider text-[#FCFCFC]/70">
+                  Today's Insight
+                </span>
+                <h3 className="text-xl font-medium mt-2 mb-3">Inner Stillness</h3>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-[#B76E79]/20 flex items-center justify-center">
+                <MoonIcon size={20} className="text-[#B76E79]" />
+              </div>
+            </div>
+            <p className="text-sm text-[#FCFCFC]/80 mb-4">
+              Today invites you to find moments of quiet contemplation. Your inner
+              wisdom speaks clearest in silence.
+            </p>
+            <div className="flex items-center justify-between text-xs text-[#FCFCFC]/60">
+              <span>Daily Wisdom</span>
+              <span>{new Date().toLocaleDateString()}</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Navigation currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
     </div>
   );
 }
