@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import SimplePage from '../components/SimplePage';
+import SimplePage from '../components/SimplePage.js';
 
 export default function CheckUpsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
