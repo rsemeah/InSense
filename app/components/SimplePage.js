@@ -8,9 +8,15 @@ import Link from 'next/link';
  * @param {string} props.title - Page title
  * @param {React.ReactNode} props.children - Page content
  * @param {string} [props.activeRoute] - Current active route for navigation highlighting
+ * @param {string} [props.backPath] - Optional path for a simple “back” navigation button
  * @returns {React.ReactElement}
  */
-export default function SimplePage({ title, children, activeRoute = '/' }) {
+export default function SimplePage({
+  title,
+  children,
+  activeRoute = '/',
+  backPath,
+}) {
   // Define all application routes
   const routes = [
     { path: '/', label: 'Home' },
@@ -35,9 +41,16 @@ export default function SimplePage({ title, children, activeRoute = '/' }) {
     header: {
       padding: '16px 20px',
       borderBottom: '1px solid #F8EBDD',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center'
+    },
+    backBtn: {
+      textDecoration: 'none',
+      color: '#1E1B2E',
+      fontSize: '16px',
+      marginRight: '12px',
     },
     logo: {
       fontSize: '20px',
@@ -110,7 +123,14 @@ export default function SimplePage({ title, children, activeRoute = '/' }) {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <div style={styles.logo}>InSense</div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {backPath && activeRoute !== '/' && (
+            <Link href={backPath} style={styles.backBtn}>
+              ← Back
+            </Link>
+          )}
+          <div style={styles.logo}>InSense</div>
+        </div>
       </header>
 
       <main style={styles.main}>
@@ -139,7 +159,7 @@ export default function SimplePage({ title, children, activeRoute = '/' }) {
       </footer>
 
       <nav style={styles.bottomNav}>
-        {routes.slice(0, 5).map((route) => (
+        {routes.map((route) => (
           <Link 
             key={route.path} 
             href={route.path}

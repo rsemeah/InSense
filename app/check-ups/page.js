@@ -50,7 +50,11 @@ export default function CheckUpsPage() {
   };
 
   return (
-    <SimplePage title="Daily Check-Up" activeRoute="/check-ups">
+    <SimplePage
+      title="Daily Check-Up"
+      activeRoute="/check-ups"
+      backPath="/inner-pulse"
+    >
       <form onSubmit={handleSubmit} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #F8EBDD', borderRadius: '8px', backgroundColor: 'white' }}>
         <div style={{ marginBottom: '15px' }}>
           <label style={{ display: 'block', marginBottom: '5px' }}>

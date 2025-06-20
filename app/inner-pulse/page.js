@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import SimplePage from '../components/SimplePage';
+import SimplePage from '../components/SimplePage.js';
 
 export default function InnerPulsePage() {
   const [insight, setInsight] = useState('');
@@ -61,7 +61,37 @@ export default function InnerPulsePage() {
           <p style={{ whiteSpace: 'pre-wrap', color: '#333' }}>{insight}</p>
         )}
       </div>
-      <p>Explore tools and rituals for your spiritual journey.</p>
+      {/* simple tool navigation  */}
+      <section style={{ marginTop: '30px' }}>
+        <h3 style={{ marginBottom: '12px', fontSize: '1.1rem', color: '#1E1B2E' }}>
+          Your Tools
+        </h3>
+        <div style={{ display: 'grid', gap: '12px' }}>
+          {[
+            { path: '/check-ups', label: 'Daily Check-up' },
+            { path: '/reflections', label: 'Reflections' },
+            { path: '/dashboard', label: 'Dashboard' },
+            { path: '/study', label: 'Study Path' },
+          ].map((tool) => (
+            <a
+              key={tool.path}
+              href={tool.path}
+              style={{
+                display: 'block',
+                padding: '12px 14px',
+                border: '1px solid #F8EBDD',
+                borderRadius: '6px',
+                backgroundColor: 'white',
+                color: '#1E1B2E',
+                textDecoration: 'none',
+                fontSize: '0.95rem',
+              }}
+            >
+              {tool.label}
+            </a>
+          ))}
+        </div>
+      </section>
     </SimplePage>
   );
 }
