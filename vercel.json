@@ -24,7 +24,7 @@
   ],
   "regions": ["sfo1"],
   "functions": {
-    "api/generate-reflection/**": {
+    "app/api/generate-reflection/route.js": {
       "memory": 1024,
       "maxDuration": 10
     }
