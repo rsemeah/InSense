@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import React, { useState } from 'react';
+import SimplePage from '../../components/SimplePage';
 
-export default function CheckUps() {
+export default function CheckUpsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [aiResponse, setAiResponse] = useState('');
   const [formData, setFormData] = useState({
@@ -50,12 +50,10 @@ export default function CheckUps() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Daily Check-Up</h1>
-      
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '20px' }}>
-          <label>
+    <SimplePage title="Daily Check-Up" activeRoute="/check-ups">
+      <form onSubmit={handleSubmit} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #F8EBDD', borderRadius: '8px', backgroundColor: 'white' }}>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', marginBottom: '5px' }}>
             Emotional: {formData.emotional}
             <input
               type="range"
@@ -69,8 +67,8 @@ export default function CheckUps() {
           </label>
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', marginBottom: '5px' }}>
             Mental: {formData.mental}
             <input
               type="range"
@@ -84,8 +82,8 @@ export default function CheckUps() {
           </label>
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', marginBottom: '5px' }}>
             Physical: {formData.physical}
             <input
               type="range"
@@ -99,8 +97,8 @@ export default function CheckUps() {
           </label>
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', marginBottom: '5px' }}>
             Spiritual: {formData.spiritual}
             <input
               type="range"
@@ -115,56 +113,40 @@ export default function CheckUps() {
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <label>
+          <label style={{ display: 'block', marginBottom: '5px' }}>
             Reflection (optional):
             <textarea
               name="reflection"
               value={formData.reflection}
               onChange={handleChange}
               rows="4"
-              style={{ width: '100%', marginTop: '5px', padding: '8px' }}
+              style={{ width: '100%', marginTop: '5px', padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
               placeholder="Share your thoughts about how you're feeling today..."
             ></textarea>
           </label>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <Link 
-            href="/" 
-            style={{ 
-              flex: 1, 
-              padding: '10px', 
-              backgroundColor: '#f0f0f0', 
-              textAlign: 'center', 
-              borderRadius: '4px',
-              textDecoration: 'none',
-              color: '#333'
-            }}
-          >
-            Cancel
-          </Link>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{ 
-              flex: 1, 
-              padding: '10px', 
-              backgroundColor: '#B76E79', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '4px',
-              cursor: 'pointer',
-              opacity: isSubmitting ? 0.7 : 1
-            }}
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit Check-Up'}
-          </button>
-        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          style={{ 
+            width: '100%',
+            padding: '10px', 
+            backgroundColor: '#B76E79', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '4px',
+            cursor: 'pointer',
+            opacity: isSubmitting ? 0.7 : 1
+          }}
+        >
+          {isSubmitting ? 'Submitting...' : 'Submit Check-Up'}
+        </button>
       </form>
 
       {aiResponse && (
         <div style={{ 
-          marginTop: '30px', 
+          marginTop: '20px', 
           padding: '15px', 
           backgroundColor: '#1E1B2E', 
           color: 'white', 
@@ -174,15 +156,6 @@ export default function CheckUps() {
           <p style={{ whiteSpace: 'pre-wrap' }}>{aiResponse}</p>
         </div>
       )}
-
-      <div style={{ marginTop: '30px', textAlign: 'center' }}>
-        <Link 
-          href="/inner-pulse" 
-          style={{ color: '#B76E79', textDecoration: 'none' }}
-        >
-          Back to Inner Pulse
-        </Link>
-      </div>
-    </div>
+    </SimplePage>
   );
 }
