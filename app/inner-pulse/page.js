@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import SimplePage from '../../components/SimplePage';
+import SimplePage from '../components/SimplePage';
 
 export default function InnerPulsePage() {
   const [insight, setInsight] = useState('');
